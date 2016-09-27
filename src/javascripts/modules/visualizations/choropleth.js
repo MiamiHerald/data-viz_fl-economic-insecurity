@@ -17,7 +17,7 @@ class Choropleth {
     this.shapeUrl = `data/florida-counties.json`;
     this.rateById = d3.map();
     this.quantize = d3.scaleQuantize()
-      .domain([-25, 15])
+      .domain([-100, 200])
       .range(d3.range(9).map((i) => `q${i}-9` ));
   }
 
@@ -47,7 +47,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.tsv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Average wages per employee by county from 2007-2015`]))
+      .defer(d3.tsv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Total employment change by county from 2007-2015`]))
       .await(this.drawMap.bind(this));
   }
 
