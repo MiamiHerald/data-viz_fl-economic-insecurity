@@ -8,11 +8,13 @@
 
 {% block content %}
   <div class="container">
-    <div class="choropleth__intro">
-      <h1>Total employment change by county from 2007-2015</h1>
-      <p>
-        While the national employment growth rate was 3 percent, Florida's overall total net job growth was only 1.2 percent. In 36 of Florida's 67 counties, jobs lost during the recession have not been replaced as total employment levels in 2015 were below those in 2007.  In addition, many counties that saw employment growth also saw their net wages decline significantly.
-      </p>
+    <div class="row">
+      <div class="choropleth__intro">
+        <h1>Total employment change by county from 2007-2015</h1>
+        <p>
+          While the national employment growth rate was 3 percent, Florida's overall total net job growth was only 1.2 percent. In 36 of Florida's 67 counties, jobs lost during the recession have not been replaced as total employment levels in 2015 were below those in 2007.  In addition, many counties that saw employment growth also saw their net wages decline significantly.
+        </p>
+      </div>
     </div>
     <div class="row">
       <div id="choropleth" class="choropleth js-choropleth" data-url="{{ homeURL }}/data/insecure-data.tsv"></div>
