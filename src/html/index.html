@@ -9,6 +9,14 @@
 {% block content %}
   <div class="container">
     <div class="row">
+      <div class="choropleth__intro">
+        <h1>Percent change in poverty rate by county</h1>
+        <p>
+          52 of the 53 counties with reliable data had increases in the poverty rate between 2007 and 2014.
+        </p>
+      </div>
+    </div>
+    <div class="row">
       <div id="choropleth" class="choropleth js-choropleth" data-url="{{ homeURL }}/data/insecure-data.tsv"></div>
     </div>
   </div>
