@@ -2,6 +2,10 @@
   fill: none;
   stroke: $white;
   stroke-width: 0.5px;
+
+  &--null {
+    fill: $grey;
+  }
 }
 
 .q8-9 { fill: rgb(247,251,255); }

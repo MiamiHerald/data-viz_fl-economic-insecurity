@@ -47,7 +47,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.tsv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Total employment change by county from 2007-2015`]))
+      .defer(d3.tsv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Percent change in poverty rate by county`]))
       .await(this.drawMap.bind(this));
   }
 
@@ -62,11 +62,23 @@ class Choropleth {
     this.svg.selectAll(`path`)
         .data(topojson.feature(shapeData, shapeData.objects[`florida-counties`]).features)
       .enter().append(`path`)
-        .attr(`class`, (d) => `${this.quantize(this.rateById.get(d.properties.county))} ${d.properties.county} county`)
+        .attr(`class`, (d) => {
+            if (this.rateById.get(d.properties.county)) {
+              return `${this.quantize(this.rateById.get(d.properties.county))} ${d.properties.county} county`
+            } else {
+              return `${d.properties.county} county county--null`
+            }
+        })
         .attr(`d`, this.path)
         .on(`mouseover`, (d) => {
           this.tooltip
-            .html(`${d.properties.county}: ${this.rateById.get(d.properties.county)}%`)
+            .html(() => {
+              if (this.rateById.get(d.properties.county)) {
+                return `${d.properties.county}: ${this.rateById.get(d.properties.county)}%`
+              } else {
+                return `${d.properties.county}: No Data`
+              }
+            })
             .classed(`is-active`, true);
         })
         .on(`mousemove`, () => {
