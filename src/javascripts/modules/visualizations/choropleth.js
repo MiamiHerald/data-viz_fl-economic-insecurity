@@ -147,7 +147,7 @@ class Choropleth {
         <p class="legend__value">${this.extent[1]}%</p>
       </div>`;
 
-    $(this.el).append(legendString);
+    $(`.legend__outer`).append(legendString);
   }
 }
 
