@@ -56,14 +56,6 @@ class Choropleth {
   }
 
   drawMap(error, shapeData) {
-    this.extent = d3.extent(this.rateById.values(), (d) => +d);
-    this.quantizePositive = d3.scaleQuantize()
-      .domain(this.extent)
-      .range(d3.range(9).map((i) => `p${i}-9` ));
-    this.quantizeNegative = d3.scaleQuantize()
-      .domain(this.extent)
-      .range(d3.range(9).map((i) => `n${i}-9` ));
-
     this.draWTooltip();
 
     // https://github.com/wbkd/d3-extended
@@ -81,6 +73,14 @@ class Choropleth {
             }
         });
     };
+
+    this.extent = d3.extent(this.rateById.values(), (d) => +d);
+    this.quantizePositive = d3.scaleQuantize()
+      .domain(this.extent)
+      .range(d3.range(9).map((i) => `p${i}-9` ));
+    this.quantizeNegative = d3.scaleQuantize()
+      .domain(this.extent)
+      .range(d3.range(9).map((i) => `n${i}-9` ));
 
     this.projection = d3.geoEquirectangular()
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
@@ -120,12 +120,25 @@ class Choropleth {
           this.tooltip
             .classed(`is-active`, false);
         });
+        
+    this.drawLegend();
   }
 
   draWTooltip() {
     this.tooltip = d3.select(this.el)
       .append(`div`)
       .attr(`class`, `choropleth__tooltip`);
+  }
+
+  drawLegend() {
+    const legendString = `
+      <div class="legend">
+        <p class="legend__value">${this.extent[0]}%</p>
+        <div class="legend__scale"></div>
+        <p class="legend__value">${this.extent[1]}%</p>
+      </div>`;
+
+    $(this.el).append(legendString);
   }
 }
 
