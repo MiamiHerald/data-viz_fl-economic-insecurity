@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import { TweenLite } from 'gsap';
 import numeral from 'numeral';
+import * as pym from 'pym.js'
 window.$ = $;
 
 class Choropleth {
@@ -22,6 +23,7 @@ class Choropleth {
     this.quantizeNegative = d3.scaleQuantize()
       .domain([-25, 15])
       .range(d3.range(9).map((i) => `n${i}-9` ));
+    this.pymChild = null;
   }
 
   render() {
@@ -31,11 +33,13 @@ class Choropleth {
         .append(`g`);
 
     this.loadData();
-    this.resizeBubbleMap();
-    $(window).on(`resize`, this.resizeBubbleMap.bind(this));
+    $(window).on(`load`, () => {
+      this.pymChild = new pym.Child({ renderCallback: this.resizeChoropleth.bind(this) });
+    });
+    $(window).on(`resize`, this.resizeChoropleth.bind(this));
   }
 
-  resizeBubbleMap() {
+  resizeChoropleth() {
     window.requestAnimationFrame(() => {
       const chart = $(this.el).find(`g`);
 

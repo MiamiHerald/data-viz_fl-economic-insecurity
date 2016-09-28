@@ -1,6 +1,6 @@
 {
   "name": "data-viz_fl-economic-insecurity",
-  "version": "3.1.0",
+  "version": "0.1.0",
   "description": "Visualzations of economic insecurity throughout the state prior to the election",
   "engines": {
     "node": ">=0.12.0 ~5.9.0",
