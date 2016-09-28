@@ -28,4 +28,8 @@
   &__value {
     font-size: rem(12);
   }
+
+  &__outer {
+    position: relative;
+  }
 }
