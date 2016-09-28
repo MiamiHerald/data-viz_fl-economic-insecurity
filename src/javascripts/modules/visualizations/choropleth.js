@@ -18,7 +18,7 @@ class Choropleth {
     this.shapeUrl = `data/florida-counties.json`;
     this.rateById = d3.map();
     this.quantizePositive = d3.scaleQuantize()
-      .domain([-25, 15])
+      .domain([-30, 30])
       .range(d3.range(9).map((i) => `p${i}-9` ));
     this.quantizeNegative = d3.scaleQuantize()
       .domain([-25, 15])
