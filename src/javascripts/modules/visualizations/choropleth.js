@@ -17,12 +17,6 @@ class Choropleth {
     this.mapWidth = this.width;
     this.shapeUrl = `data/florida-counties.json`;
     this.rateById = d3.map();
-    this.quantizePositive = d3.scaleQuantize()
-      .domain([-100, 200])
-      .range(d3.range(9).map((i) => `p${i}-9` ));
-    this.quantizeNegative = d3.scaleQuantize()
-      .domain([-100, 200])
-      .range(d3.range(9).map((i) => `n${i}-9` ));
   }
 
   render() {
@@ -62,6 +56,14 @@ class Choropleth {
   }
 
   drawMap(error, shapeData) {
+    this.extent = d3.extent(this.rateById.values(), (d) => +d);
+    this.quantizePositive = d3.scaleQuantize()
+      .domain(this.extent)
+      .range(d3.range(9).map((i) => `p${i}-9` ));
+    this.quantizeNegative = d3.scaleQuantize()
+      .domain(this.extent)
+      .range(d3.range(9).map((i) => `n${i}-9` ));
+
     this.draWTooltip();
 
     // https://github.com/wbkd/d3-extended
