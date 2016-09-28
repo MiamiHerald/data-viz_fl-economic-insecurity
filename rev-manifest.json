@@ -1,0 +1,15 @@
+{
+  "fonts/LyonTextWeb-Regular.woff": "fonts/LyonTextWeb-Regular-d068fd1c0a.woff",
+  "fonts/McClatchySans-Black.woff": "fonts/McClatchySans-Black-63a7bcb24f.woff",
+  "fonts/McClatchySans-Regular.woff": "fonts/McClatchySans-Regular-10c66dc5f5.woff",
+  "fonts/McClatchySans-Semibold.woff": "fonts/McClatchySans-Semibold-ad3f788456.woff",
+  "fonts/McClatchySans-Thin.woff": "fonts/McClatchySans-Thin-2b183cbf5d.woff",
+  "fonts/McClatchySansCond-Semibold.woff": "fonts/McClatchySansCond-Semibold-2300a4fe11.woff",
+  "fonts/McClatchySerif-Regular.woff": "fonts/McClatchySerif-Regular-7223334890.woff",
+  "fonts/McClatchySlab-Bold.woff": "fonts/McClatchySlab-Bold-c0ed170d87.woff",
+  "fonts/McClatchySlab-Light.woff": "fonts/McClatchySlab-Light-0320daa736.woff",
+  "fonts/McClatchySlab-Regular.woff": "fonts/McClatchySlab-Regular-b7c27afbb4.woff",
+  "fonts/McClatchySlab-Semibold.woff": "fonts/McClatchySlab-Semibold-f6f243ed40.woff",
+  "javascripts/app.js": "javascripts/app-58bcc8c2498e82ca0139.js",
+  "stylesheets/app.css": "stylesheets/app-22c73b1978.css"
+}
