@@ -52,7 +52,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.tsv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Average wages per employee by county from 2007-2015`]))
+      .defer(d3.tsv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Percent change in poverty rate by county`]))
       .await(this.drawMap.bind(this));
   }
 
@@ -98,6 +98,8 @@ class Choropleth {
             return `${this.quantizePositive(this.rateById.get(d.properties.county))} county county--${d.id}`
           } else if (this.rateById.get(d.properties.county) < 0) {
             return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id}`
+          } else if (!this.rateById.get(d.properties.county)) {
+            return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id} county--null`
           }
         })
         .attr(`d`, this.path)
@@ -107,7 +109,13 @@ class Choropleth {
               .classed(`is-active`, true);
 
           this.tooltip
-            .html(`${d.properties.county}: ${this.rateById.get(d.properties.county)}%`)
+            .html(() => {
+              if (this.rateById.get(d.properties.county)) {
+                return `${d.properties.county}: ${this.rateById.get(d.properties.county)}%`
+              } else {
+                return `${d.properties.county}: No Data`
+              }
+            })
             .classed(`is-active`, true);
         })
         .on(`mousemove`, () => {
@@ -141,7 +149,7 @@ class Choropleth {
         <p class="legend__value">${this.extent[1]}%</p>
       </div>`;
 
-    $(this.el).append(legendString);
+    $(`.legend__outer`).append(legendString);
   }
 }
 

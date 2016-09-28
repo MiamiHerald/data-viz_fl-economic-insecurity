@@ -3,6 +3,10 @@
   stroke: $white;
   stroke-width: 0.5px;
 
+  &--null {
+    fill: $grey;
+  }
+
   &.is-active {
     stroke: $black;
   }
