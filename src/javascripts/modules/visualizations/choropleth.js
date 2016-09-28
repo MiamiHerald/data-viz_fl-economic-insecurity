@@ -47,6 +47,10 @@ class Choropleth {
 
       TweenLite.set(chart, { scale: this.width / this.mapWidth });
       d3.select(`.choropleth__svg`).attr(`height`, this.height);
+
+      if (this.pymChild) {
+        this.pymChild.sendHeight();
+      }
     });
   }
 
