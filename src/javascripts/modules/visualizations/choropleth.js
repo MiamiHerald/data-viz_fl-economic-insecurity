@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import { TweenLite } from 'gsap';
 import numeral from 'numeral';
+import * as pym from 'pym.js'
 window.$ = $;
 
 class Choropleth {
@@ -28,11 +29,13 @@ class Choropleth {
         .append(`g`);
 
     this.loadData();
-    this.resizeBubbleMap();
-    $(window).on(`resize`, this.resizeBubbleMap.bind(this));
+    $(window).on(`load`, () => {
+      this.pymChild = new pym.Child({ renderCallback: this.resizeChoropleth.bind(this) });
+    });
+    $(window).on(`resize`, this.resizeChoropleth.bind(this));
   }
 
-  resizeBubbleMap() {
+  resizeChoropleth() {
     window.requestAnimationFrame(() => {
       const chart = $(this.el).find(`g`);
 
@@ -54,6 +57,22 @@ class Choropleth {
   drawMap(error, shapeData) {
     this.draWTooltip();
 
+    // https://github.com/wbkd/d3-extended
+    d3.selection.prototype.moveToFront = function() {
+      return this.each(function(){
+        this.parentNode.appendChild(this);
+      });
+    };
+
+    d3.selection.prototype.moveToBack = function() {
+        return this.each(function() {
+            var firstChild = this.parentNode.firstChild;
+            if (firstChild) {
+                this.parentNode.insertBefore(this, firstChild);
+            }
+        });
+    };
+
     this.projection = d3.geoEquirectangular()
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
     this.path = d3.geoPath()
@@ -62,9 +81,19 @@ class Choropleth {
     this.svg.selectAll(`path`)
         .data(topojson.feature(shapeData, shapeData.objects[`florida-counties`]).features)
       .enter().append(`path`)
-        .attr(`class`, (d) => `${this.quantize(this.rateById.get(d.properties.county))} ${d.properties.county} county`)
+        .attr(`class`, (d) => {
+          if (this.rateById.get(d.properties.county) >= 0) {
+            return `${this.quantizePositive(this.rateById.get(d.properties.county))} county county--${d.id}`
+          } else if (this.rateById.get(d.properties.county) < 0) {
+            return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id}`
+          }
+        })
         .attr(`d`, this.path)
         .on(`mouseover`, (d) => {
+          d3.select(`.county--${d.id}`)
+              .moveToFront()
+              .classed(`is-active`, true);
+
           this.tooltip
             .html(`${d.properties.county}: ${this.rateById.get(d.properties.county)}%`)
             .classed(`is-active`, true);
@@ -74,7 +103,11 @@ class Choropleth {
             .style(`top`, `${d3.event.pageY}px`)
             .style(`left`, `${d3.event.pageX}px`);
         })
-        .on(`mouseout`, () => {
+        .on(`mouseout`, (d) => {
+          d3.select(`.county--${d.id}`)
+              .moveToBack()
+              .classed(`is-active`, false);
+
           this.tooltip
             .classed(`is-active`, false);
         });
