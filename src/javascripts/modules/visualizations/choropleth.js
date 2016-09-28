@@ -17,9 +17,12 @@ class Choropleth {
     this.mapWidth = this.width;
     this.shapeUrl = `data/florida-counties.json`;
     this.rateById = d3.map();
-    this.quantize = d3.scaleQuantize()
+    this.quantizePositive = d3.scaleQuantize()
       .domain([-100, 200])
-      .range(d3.range(9).map((i) => `q${i}-9` ));
+      .range(d3.range(9).map((i) => `p${i}-9` ));
+    this.quantizeNegative = d3.scaleQuantize()
+      .domain([-100, 200])
+      .range(d3.range(9).map((i) => `n${i}-9` ));
   }
 
   render() {
