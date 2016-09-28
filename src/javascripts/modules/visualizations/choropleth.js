@@ -48,6 +48,10 @@ class Choropleth {
 
       TweenLite.set(chart, { scale: this.width / this.mapWidth });
       d3.select(`.choropleth__svg`).attr(`height`, this.height);
+
+      if (this.pymChild) {
+        this.pymChild.sendHeight();
+      }
     });
   }
 
@@ -90,6 +94,8 @@ class Choropleth {
             return `${this.quantizePositive(this.rateById.get(d.properties.county))} county county--${d.id}`
           } else if (this.rateById.get(d.properties.county) < 0) {
             return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id}`
+          } else if (!this.rateById.get(d.properties.county)) {
+            return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id} county--null`
           }
         })
         .attr(`d`, this.path)
