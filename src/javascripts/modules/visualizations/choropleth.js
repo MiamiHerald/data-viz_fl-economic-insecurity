@@ -17,12 +17,6 @@ class Choropleth {
     this.mapWidth = this.width;
     this.shapeUrl = `data/florida-counties.json`;
     this.rateById = d3.map();
-    this.quantizePositive = d3.scaleQuantize()
-      .domain([-25, 15])
-      .range(d3.range(9).map((i) => `p${i}-9` ));
-    this.quantizeNegative = d3.scaleQuantize()
-      .domain([-25, 15])
-      .range(d3.range(9).map((i) => `n${i}-9` ));
     this.pymChild = null;
   }
 
@@ -48,6 +42,10 @@ class Choropleth {
 
       TweenLite.set(chart, { scale: this.width / this.mapWidth });
       d3.select(`.choropleth__svg`).attr(`height`, this.height);
+
+      if (this.pymChild) {
+        this.pymChild.sendHeight();
+      }
     });
   }
 
@@ -59,6 +57,8 @@ class Choropleth {
   }
 
   drawMap(error, shapeData) {
+    if (error) throw error;
+
     this.draWTooltip();
 
     // https://github.com/wbkd/d3-extended
@@ -76,6 +76,14 @@ class Choropleth {
             }
         });
     };
+
+    this.extent = d3.extent(this.rateById.values(), (d) => +d);
+    this.quantizePositive = d3.scaleQuantize()
+      .domain(this.extent)
+      .range(d3.range(9).map((i) => `p${i}-9` ));
+    this.quantizeNegative = d3.scaleQuantize()
+      .domain(this.extent)
+      .range(d3.range(9).map((i) => `n${i}-9` ));
 
     this.projection = d3.geoEquirectangular()
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
@@ -115,12 +123,25 @@ class Choropleth {
           this.tooltip
             .classed(`is-active`, false);
         });
+
+    this.drawLegend();
   }
 
   draWTooltip() {
     this.tooltip = d3.select(this.el)
       .append(`div`)
       .attr(`class`, `choropleth__tooltip`);
+  }
+
+  drawLegend() {
+    const legendString = `
+      <div class="legend">
+        <p class="legend__value">${this.extent[0]}%</p>
+        <div class="legend__scale"></div>
+        <p class="legend__value">${this.extent[1]}%</p>
+      </div>`;
+
+    $(this.el).append(legendString);
   }
 }
 
