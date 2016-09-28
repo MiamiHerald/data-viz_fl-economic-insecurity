@@ -1,15 +1,15 @@
 {
-  "name": "data-viz_starter",
+  "name": "data-viz_fl-economic-insecurity",
   "version": "3.1.0",
-  "description": "A starting point for data visualization projects for the Miami Herald",
+  "description": "Visualzations of economic insecurity throughout the state prior to the election",
   "engines": {
     "node": ">=0.12.0 ~5.9.0",
     "npm": ">=2.14.12 ~3.7.3"
   },
-  "homepage": "https://github.com/data-viz_fl-economic-insecurity",
+  "homepage": "https://MiamiHerald.github.io/data-viz_fl-economic-insecurity",
   "repository": {
     "type": "git",
-    "url": "git://MiamiHerald/data-viz_fl-economic-insecurity.git"
+    "url": "git://github.com/MiamiHerald/data-viz_fl-economic-insecurity.git"
   },
   "scripts": {
     "start": "gulp",
