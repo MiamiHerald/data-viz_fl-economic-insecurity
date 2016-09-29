@@ -80,10 +80,10 @@ class Choropleth {
     this.extent = d3.extent(this.rateById.values(), (d) => +d);
     this.quantizePositive = d3.scaleQuantize()
       .domain(this.extent)
-      .range(d3.range(9).map((i) => `p${i}-9` ));
+      .range(d3.range(4).map((i) => `p${i}-4` ));
     this.quantizeNegative = d3.scaleQuantize()
       .domain(this.extent)
-      .range(d3.range(9).map((i) => `n${i}-9` ));
+      .range(d3.range(4).map((i) => `n${i}-4` ));
 
     this.projection = d3.geoEquirectangular()
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
