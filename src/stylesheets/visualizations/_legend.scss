@@ -1,5 +1,4 @@
 .legend {
-  @include position(absolute, null null 1rem null);
   max-width: em(300);
   background-color: rgba($white, 0.98);
 

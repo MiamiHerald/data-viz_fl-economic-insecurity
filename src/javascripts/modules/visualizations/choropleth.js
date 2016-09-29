@@ -52,7 +52,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`% 95/20 Ratio Change 2007-2014`]))
+      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, [d[`% 95/20 Ratio Change 2007-2014`], d[`Lowest Quintile`], d[`Second Quintile`], d[`Third Quintile`], d[`Fourth Quintile`], d[`Highest Quintile`]]))
       .await(this.drawMap.bind(this));
   }
 
@@ -75,7 +75,7 @@ class Choropleth {
         });
     };
 
-    this.extent = d3.extent(this.rateById.values(), (d) => +d);
+    this.extent = d3.extent(this.rateById.values(), (d) => +d[0]);
     this.quantizePositive = d3.scaleQuantize()
       .domain(this.extent)
       .range(d3.range(9).map((i) => `p${i}-9` ));
@@ -92,12 +92,12 @@ class Choropleth {
         .data(topojson.feature(shapeData, shapeData.objects[`florida-counties`]).features)
       .enter().append(`path`)
         .attr(`class`, (d) => {
-          if (this.rateById.get(d.properties.county) === ``) {
+          if (this.rateById.get(d.properties.county)[0] === ``) {
             return `county county--${d.id} county--null`
-          } else if (this.rateById.get(d.properties.county) >= 0) {
-            return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id}`
-          } else if (this.rateById.get(d.properties.county) < 0) {
-            return `${this.quantizePositive(this.rateById.get(d.properties.county))} county county--${d.id}`
+          } else if (this.rateById.get(d.properties.county)[0] >= 0) {
+            return `${this.quantizeNegative(this.rateById.get(d.properties.county)[0])} county county--${d.id}`
+          } else if (this.rateById.get(d.properties.county)[0] < 0) {
+            return `${this.quantizePositive(this.rateById.get(d.properties.county)[0])} county county--${d.id}`
           }
         })
         .attr(`d`, this.path)
@@ -108,8 +108,20 @@ class Choropleth {
 
           this.tooltip
             .html(() => {
-              if (this.rateById.get(d.properties.county)) {
-                return `${d.properties.county}: ${this.rateById.get(d.properties.county)}%`
+              if (this.rateById.get(d.properties.county)[0] !== ``) {
+                return `
+                  <h2>${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%</h2>
+                  <div class="choropleth__tooltip__quintile--title">Lowest Quintile</div>
+                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[1]}%</div>
+                  <div class="choropleth__tooltip__quintile--title">Second Quintile</div>
+                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[2]}%</div>
+                  <div class="choropleth__tooltip__quintile--title">Third Quintile</div>
+                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[3]}%</div>
+                  <div class="choropleth__tooltip__quintile--title">Fourth Quintile</div>
+                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[4]}%</div>
+                  <div class="choropleth__tooltip__quintile--title">Highest Quintile</div>
+                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[5]}%</div>
+                `
               } else {
                 return `${d.properties.county}: No Data`
               }
@@ -118,7 +130,7 @@ class Choropleth {
         })
         .on(`mousemove`, () => {
           this.tooltip
-            .style(`top`, `${d3.event.pageY}px`)
+            .style(`top`, `${d3.event.pageY + 150}px`)
             .style(`left`, `${d3.event.pageX}px`);
         })
         .on(`mouseout`, (d) => {

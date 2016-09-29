@@ -1,3 +1,5 @@
+$info-margin-bottom: 0.2rem;
+
 .county {
   fill: none;
   stroke: $white;
@@ -53,6 +55,23 @@
     opacity: 0;
     transition: opacity 0.3s linear;
     font-family: $heading-font-family-sans;
+    border: 1px solid #ccc;
+    max-width: em(150);
+    text-align: center;
+
+    &__quintile--title,
+    &__quintile,
+    &__county {
+      margin-bottom: $info-margin-bottom;
+    }
+
+    &__quintile--title,
+    &__county--title {
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      margin-top: 0.7rem;
+      color: #AAA;
+    }
 
     &.is-active {
       opacity: 1;
