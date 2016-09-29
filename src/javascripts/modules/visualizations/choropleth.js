@@ -51,7 +51,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.tsv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Total employment change by county from 2007-2015`]))
+      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Total employment change by county from 2007-2015`]))
       .await(this.drawMap.bind(this));
   }
 
@@ -91,7 +91,9 @@ class Choropleth {
         .data(topojson.feature(shapeData, shapeData.objects[`florida-counties`]).features)
       .enter().append(`path`)
         .attr(`class`, (d) => {
-          if (this.rateById.get(d.properties.county) >= 0) {
+          if (this.rateById.get(d.properties.county) === ``) {
+            return `county county--null`
+          } else if (this.rateById.get(d.properties.county) >= 0) {
             return `${this.quantizePositive(this.rateById.get(d.properties.county))} county county--${d.id}`
           } else if (this.rateById.get(d.properties.county) < 0) {
             return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id}`
