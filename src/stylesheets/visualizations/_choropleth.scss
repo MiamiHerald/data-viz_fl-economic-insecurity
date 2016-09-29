@@ -33,7 +33,6 @@
 .n8-9 { fill: rgba(195, 66, 63, 0.2); }
 
 .choropleth {
-  position: relative;
   margin-bottom: 1.25rem;
 
   &__intro {
@@ -52,7 +51,7 @@
     border: em(1) solid $black;
     border-radius: rem(5);
     opacity: 0;
-    transition: opacity 0.3s linear;
+    transition: opacity 0.1s linear;
     font-family: $heading-font-family-sans;
 
     &.is-active {
