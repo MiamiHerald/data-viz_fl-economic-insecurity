@@ -52,7 +52,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Percent change in household income by county from 2007-2014`]))
+      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`% 95/20 Ratio Change 2007-2014`]))
       .await(this.drawMap.bind(this));
   }
 
@@ -87,7 +87,7 @@ class Choropleth {
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
     this.path = d3.geoPath()
       .projection(this.projection);
-      
+
     this.svg.selectAll(`path`)
         .data(topojson.feature(shapeData, shapeData.objects[`florida-counties`]).features)
       .enter().append(`path`)
@@ -95,9 +95,9 @@ class Choropleth {
           if (this.rateById.get(d.properties.county) === ``) {
             return `county county--${d.id} county--null`
           } else if (this.rateById.get(d.properties.county) >= 0) {
-            return `${this.quantizePositive(this.rateById.get(d.properties.county))} county county--${d.id}`
-          } else if (this.rateById.get(d.properties.county) < 0) {
             return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id}`
+          } else if (this.rateById.get(d.properties.county) < 0) {
+            return `${this.quantizePositive(this.rateById.get(d.properties.county))} county county--${d.id}`
           }
         })
         .attr(`d`, this.path)
