@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { legendColor } from 'd3-svg-legend';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import { TweenLite } from 'gsap';
@@ -136,14 +137,29 @@ class Choropleth {
   }
 
   drawLegend() {
-    const legendString = `
-      <div class="legend">
-        <p class="legend__value">${this.extent[0]}%</p>
-        <div class="legend__scale"></div>
-        <p class="legend__value">${this.extent[1]}%</p>
-      </div>`;
+    // const legendString = `
+    //   <div class="legend">
+    //     <p class="legend__value">${this.extent[0]}%</p>
+    //     <div class="legend__scale"></div>
+    //     <p class="legend__value">${this.extent[1]}%</p>
+    //   </div>`;
+    //
 
-    $(`.legend__outer`).append(legendString);
+    this.quantize = d3.scaleQuantize()
+      .domain(this.extent)
+      .range(d3.range(4).map((i) => `n${i}-4`));
+
+    this.svg.append(`g`)
+      .attr("class", "legendLinear")
+      .attr("transform", "translate(20,20)");
+
+    this.legendLinear = legendColor()
+      .labelFormat(d3.format(`.2f`))
+      .useClass(true)
+      .scale(this.quantize);
+
+    this.svg.select(".legendLinear")
+      .call(this.legendLinear);
   }
 }
 
