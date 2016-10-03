@@ -87,7 +87,7 @@ class Choropleth {
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
     this.path = d3.geoPath()
       .projection(this.projection);
-      
+
     this.svg.selectAll(`path`)
         .data(topojson.feature(shapeData, shapeData.objects[`florida-counties`]).features)
       .enter().append(`path`)
