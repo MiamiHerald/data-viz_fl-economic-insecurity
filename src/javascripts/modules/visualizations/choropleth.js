@@ -145,21 +145,37 @@ class Choropleth {
     //   </div>`;
     //
 
-    this.quantize = d3.scaleQuantize()
-      .domain(this.extent)
+    this.quantizeLegendNegative = d3.scaleQuantize()
+      .domain([this.extent[0], 0])
       .range(d3.range(4).map((i) => `n${i}-4`));
 
-    this.svg.append(`g`)
-      .attr("class", "legendLinear")
-      .attr("transform", "translate(20,20)");
+    this.quantizeLegendPositive = d3.scaleQuantize()
+      .domain([0, this.extent[1]])
+      .range(d3.range(4).map((i) => `p${i}-4`));
 
-    this.legendLinear = legendColor()
+    this.svg.append(`g`)
+      .attr("class", "legend-quantized--negative")
+      .attr("transform", "translate(20,100)");
+
+    this.legendQuantNegative = legendColor()
       .labelFormat(d3.format(`.2f`))
       .useClass(true)
-      .scale(this.quantize);
+      .scale(this.quantizeLegendNegative);
 
-    this.svg.select(".legendLinear")
-      .call(this.legendLinear);
+    this.svg.select(".legend-quantized--negative")
+      .call(this.legendQuantNegative);
+
+    this.svg.append(`g`)
+      .attr("class", "legend-quantized--positive")
+      .attr("transform", "translate(20,175)");
+
+    this.legendQuantPositive = legendColor()
+      .labelFormat(d3.format(`.2f`))
+      .useClass(true)
+      .scale(this.quantizeLegendPositive);
+
+    this.svg.select(".legend-quantized--positive")
+      .call(this.legendQuantPositive);
   }
 }
 
