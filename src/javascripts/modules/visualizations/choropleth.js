@@ -52,7 +52,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, [d[`% 95/20 Ratio Change 2007-2014`], d[`Lowest Quintile`], d[`Second Quintile`], d[`Third Quintile`], d[`Fourth Quintile`], d[`Highest Quintile`]]))
+      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, [d[`% 95/20 Ratio Change 2007-2014`], d[`Lowest Quintile`], d[`Second Quintile`], d[`Third Quintile`], d[`Fourth Quintile`], d[`Highest Quintile`], d[`Top 5 Percent`]]))
       .await(this.drawMap.bind(this));
   }
 
@@ -111,16 +111,18 @@ class Choropleth {
               if (this.rateById.get(d.properties.county)[0] !== ``) {
                 return `
                   <h2>${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%</h2>
-                  <div class="choropleth__tooltip__quintile--title">Lowest Quintile</div>
+                  <div class="choropleth__tooltip__quintile--title">1st Quintile</div>
                   <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[1]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">Second Quintile</div>
+                  <div class="choropleth__tooltip__quintile--title">2nd Quintile</div>
                   <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[2]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">Third Quintile</div>
+                  <div class="choropleth__tooltip__quintile--title">3rd Quintile</div>
                   <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[3]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">Fourth Quintile</div>
+                  <div class="choropleth__tooltip__quintile--title">4th Quintile</div>
                   <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[4]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">Highest Quintile</div>
+                  <div class="choropleth__tooltip__quintile--title">5th Quintile</div>
                   <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[5]}%</div>
+                  <div class="choropleth__tooltip__quintile--title">Top 5 Percent</div>
+                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[6]}%</div>
                 `
               } else {
                 return `${d.properties.county}: No Data`
