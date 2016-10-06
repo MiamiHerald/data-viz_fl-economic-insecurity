@@ -75,13 +75,9 @@ class Choropleth {
         });
     };
 
-    this.extent = d3.extent(this.rateById.values(), (d) => +d[0]);
-    this.quantizePositive = d3.scaleQuantize()
-      .domain(this.extent)
-      .range(d3.range(9).map((i) => `p${i}-9` ));
-    this.quantizeNegative = d3.scaleQuantize()
-      .domain(this.extent)
-      .range(d3.range(9).map((i) => `n${i}-9` ));
+    this.color = d3.scaleThreshold()
+      .domain([0, 6, 9, 16, 23])
+      .range(['#e6f5d0', '#fde0ef', '#f1b6da', '#de77ae', '#c51b7d', '#8e0152']);
 
     this.projection = d3.geoEquirectangular()
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
@@ -93,14 +89,17 @@ class Choropleth {
       .enter().append(`path`)
         .attr(`class`, (d) => {
           if (this.rateById.get(d.properties.county)[0] === ``) {
-            return `county county--${d.id} county--null`
-          } else if (this.rateById.get(d.properties.county)[0] >= 0) {
-            return `${this.quantizeNegative(this.rateById.get(d.properties.county)[0])} county county--${d.id}`
-          } else if (this.rateById.get(d.properties.county)[0] < 0) {
-            return `${this.quantizePositive(this.rateById.get(d.properties.county)[0])} county county--${d.id}`
+            return `county county--null`
+          } else {
+            return `county county--${d.id}`
           }
         })
         .attr(`d`, this.path)
+        .style(`fill`, (d) => {
+          if (this.rateById.get(d.properties.county)[0] !== ``) {
+            return this.color(this.rateById.get(d.properties.county)[0])
+          }
+        })
         .on(`mouseover`, (d) => {
           d3.select(`.county--${d.id}`)
               .moveToFront()
@@ -143,25 +142,12 @@ class Choropleth {
           this.tooltip
             .classed(`is-active`, false);
         });
-
-    this.drawLegend();
   }
 
   draWTooltip() {
     this.tooltip = d3.select(this.el)
       .append(`div`)
       .attr(`class`, `choropleth__tooltip`);
-  }
-
-  drawLegend() {
-    const legendString = `
-      <div class="legend">
-        <p class="legend__value">${this.extent[0]}%</p>
-        <div class="legend__scale"></div>
-        <p class="legend__value">${this.extent[1]}%</p>
-      </div>`;
-
-    $(`.legend__outer`).append(legendString);
   }
 }
 
