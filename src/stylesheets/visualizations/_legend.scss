@@ -1,35 +1,11 @@
 .legend {
-  @include position(absolute, null null 1rem null);
-  max-width: em(300);
-  background-color: rgba($white, 0.98);
+  position: relative;
+  display: block;
+  margin: 1rem auto;
 
-  &__scale,
-  &__value {
-    display: inline-block;
+  @include media($medium-screen-up) {
+    @include position(absolute, 45% null null null);
   }
 
-  &__scale {
-    position: relative;
-    @include size(em(80) em(10))
-    vertical-align: middle;
-    margin: 0 0.25em;
-    border-radius: em(10);
-    background: linear-gradient(to right, rgba(195, 66, 63, 1) 0%, rgba(155, 197, 61, 1) 100%);
-
-    &:before {
-      content: '';
-      @include size(2px em(20));
-      @include position(absolute, 50% null null 50%);
-      transform: translateY(-50%);
-      background-color: $black;
-    }
-  }
-
-  &__value {
-    font-size: rem(12);
-  }
-
-  &__outer {
-    position: relative;
-  }
+  max-width: 400px;
 }
