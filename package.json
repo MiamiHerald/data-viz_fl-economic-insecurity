@@ -89,7 +89,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "d3-svg-legend": "^2.10.0",
     "normalize.css": "^4.0.0"
   }
 }
