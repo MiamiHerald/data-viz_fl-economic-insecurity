@@ -78,13 +78,9 @@ class Choropleth {
         });
     };
 
-    this.extent = d3.extent(this.rateById.values(), (d) => +d);
-    this.quantizePositive = d3.scaleQuantize()
-      .domain(this.extent)
-      .range(d3.range(4).map((i) => `p${i}-4` ));
-    this.quantizeNegative = d3.scaleQuantize()
-      .domain(this.extent)
-      .range(d3.range(4).map((i) => `n${i}-4` ));
+    this.color = d3.scaleThreshold()
+      .domain([-4, -2, 0, 2, 4])
+      .range([`rgba(216, 31, 39, 1)`, `rgba(216, 31, 39, 0.5)`, `rgba(216, 31, 39, 0.15)`, `rgba(57, 181, 74, 0.15)`, `rgba(57, 181, 74, 0.50)`, `rgba(57, 181, 74, 1)`]);
 
     this.projection = d3.geoEquirectangular()
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
@@ -97,13 +93,12 @@ class Choropleth {
         .attr(`class`, (d) => {
           if (this.rateById.get(d.properties.county) === ``) {
             return `county county--null`
-          } else if (this.rateById.get(d.properties.county) >= 0) {
-            return `${this.quantizePositive(this.rateById.get(d.properties.county))} county county--${d.id}`
-          } else if (this.rateById.get(d.properties.county) < 0) {
-            return `${this.quantizeNegative(this.rateById.get(d.properties.county))} county county--${d.id}`
+          } else {
+            return `county county--${d.id}`
           }
         })
         .attr(`d`, this.path)
+        .style(`fill`, (d) => this.color(this.rateById.get(d.properties.county)))
         .on(`mouseover`, (d) => {
           d3.select(`.county--${d.id}`)
               .moveToFront()
@@ -126,56 +121,12 @@ class Choropleth {
           this.tooltip
             .classed(`is-active`, false);
         });
-
-    this.drawLegend();
   }
 
   draWTooltip() {
     this.tooltip = d3.select(this.el)
       .append(`div`)
       .attr(`class`, `choropleth__tooltip`);
-  }
-
-  drawLegend() {
-    // const legendString = `
-    //   <div class="legend">
-    //     <p class="legend__value">${this.extent[0]}%</p>
-    //     <div class="legend__scale"></div>
-    //     <p class="legend__value">${this.extent[1]}%</p>
-    //   </div>`;
-    //
-
-    this.quantizeLegendNegative = d3.scaleQuantize()
-      .domain([this.extent[0], 0])
-      .range(d3.range(4).map((i) => `n${i}-4`));
-
-    this.quantizeLegendPositive = d3.scaleQuantize()
-      .domain([0, this.extent[1]])
-      .range(d3.range(4).map((i) => `p${i}-4`));
-
-    this.svg.append(`g`)
-      .attr("class", "legend-quantized--negative")
-      .attr("transform", "translate(20,100)");
-
-    this.legendQuantNegative = legendColor()
-      .labelFormat(d3.format(`.2f`))
-      .useClass(true)
-      .scale(this.quantizeLegendNegative);
-
-    this.svg.select(".legend-quantized--negative")
-      .call(this.legendQuantNegative);
-
-    this.svg.append(`g`)
-      .attr("class", "legend-quantized--positive")
-      .attr("transform", "translate(20,175)");
-
-    this.legendQuantPositive = legendColor()
-      .labelFormat(d3.format(`.2f`))
-      .useClass(true)
-      .scale(this.quantizeLegendPositive);
-
-    this.svg.select(".legend-quantized--positive")
-      .call(this.legendQuantPositive);
   }
 }
 
