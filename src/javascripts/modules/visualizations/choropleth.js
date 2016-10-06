@@ -79,7 +79,7 @@ class Choropleth {
 
     this.color = d3.scaleThreshold()
       .domain([-4, -2, 0, 2, 4])
-      .range(['#b35806','#f1a340','#fee0b6','#d8daeb','#998ec3','#542788']);
+      .range(['#d73027','#fc8d59','#fee08b','#d8daeb','#998ec3','#542788']);
 
     this.projection = d3.geoEquirectangular()
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
