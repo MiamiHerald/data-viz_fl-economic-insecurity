@@ -4,7 +4,7 @@
   margin: 1rem auto;
 
   @include media($medium-screen-up) {
-    @include position(absolute, 45% null null null);
+    @include position(absolute, 33% null null null);
   }
 
   max-width: 400px;
