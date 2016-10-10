@@ -25,6 +25,13 @@ class Choropleth {
         .attr(`width`, `100%`)
         .attr(`class`, `choropleth__svg`)
         .append(`g`);
+    this.root = d3.select(`svg`);
+    this.scr = { x: window.scrollX, y: window.scrollY, w: window.innerWidth, h: window.innerHeight };
+    this.body_sel = d3.select(`body`);
+    this.body = { w: this.body_sel.node().offsetWidth, h: this.body_sel.node().offsetHeight };
+    this.doc = { w: document.width, h: document.height };
+    this.svgpos = this.getNodePos(this.root.node());
+    this.dist = { x: 10, y: 10 };
 
     this.loadData();
     $(window).on(`load`, () => {
@@ -42,6 +49,7 @@ class Choropleth {
 
       TweenLite.set(chart, { scale: this.width / this.mapWidth });
       d3.select(`.choropleth__svg`).attr(`height`, this.height);
+      this.getNodePos(this.root.node())
 
       if (this.pymChild) {
         this.pymChild.sendHeight();
@@ -77,7 +85,7 @@ class Choropleth {
 
     this.color = d3.scaleThreshold()
       .domain([0, 6, 9, 16, 23])
-      .range(['#e6f5d0', '#fde0ef', '#f1b6da', '#de77ae', '#c51b7d', '#8e0152']);
+      .range([`#e6f5d0`, `#fde0ef`, `#f1b6da`, `#de77ae`, `#c51b7d`, `#8e0152`]);
 
     this.projection = d3.geoEquirectangular()
       .fitSize([this.width, this.height], topojson.feature(shapeData, shapeData.objects[`florida-counties`]));
@@ -139,9 +147,35 @@ class Choropleth {
             .classed(`is-active`, true);
         })
         .on(`mousemove`, () => {
-          this.tooltip
-            .style(`top`, `${d3.event.pageY -10}px`)
-            .style(`left`, `${d3.event.pageX}px`);
+          this.m = d3.mouse(this.root.node());
+          this.scr.x = window.scrollX;
+          this.scr.y = window.scrollY;
+          this.m[0] += this.svgpos.x;
+          this.m[1] += this.svgpos.y;
+          this.tooltip.style(`right`, ``);
+          this.tooltip.style(`left`, ``);
+          this.tooltip.style(`bottom`, ``);
+          this.tooltip.style(`top`, ``);
+          // console.log('coordinates: doc/body/scr/svgpos/mouse: ', this.doc, this.body, this.scr, this.svgpos, this.m);
+          if (this.m[0] > this.scr.x + this.scr.w / 2) {
+            console.log(`right`);
+            this.tooltip.style(`right`, (this.body.w - this.m[0]) + `px`);
+          }
+          else {
+            console.log(`left`);
+            this.tooltip.style(`left`, (this.m[0]) + `px`);
+          }
+
+          this.tooltip.style(`top`, (this.m[1] + this.dist.y) + `px`);
+
+          // if (this.m[1] > this.scr.y + this.scr.h / 2) {
+          //   console.log(`bottom`);
+          //   this.tooltip.style(`bottom`, (this.body.h - this.m[1]) + `px`);
+          // }
+          // else {
+          //   console.log(`top`);
+          //   this.tooltip.style(`top`, (this.m[1] + this.dist.y) + `px`);
+          // }
         })
         .on(`mouseout`, (d) => {
           d3.select(`.county--${d.id}`)
@@ -151,6 +185,17 @@ class Choropleth {
           this.tooltip
             .classed(`is-active`, false);
         });
+  }
+
+  // based off of http://bl.ocks.org/GerHobbelt/2505393
+  getNodePos(el) {
+    let body = d3.select('body').node();
+
+    for (var lx = 0, ly = 0;
+         el != null && el != body;
+         lx += (el.offsetLeft || el.clientLeft), ly += (el.offsetTop || el.clientTop), el = (el.offsetParent || el.parentNode))
+        ;
+    return {x: lx, y: ly};
   }
 
   draWTooltip() {
