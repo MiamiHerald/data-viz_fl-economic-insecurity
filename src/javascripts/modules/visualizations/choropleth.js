@@ -89,7 +89,7 @@ class Choropleth {
       .enter().append(`path`)
         .attr(`class`, (d) => {
           if (this.rateById.get(d.properties.county) === ``) {
-            return `county county--null`
+            return `county county--${d.id} county--null`
           } else {
             return `county county--${d.id}`
           }
@@ -117,7 +117,7 @@ class Choropleth {
         })
         .on(`mousemove`, () => {
           this.tooltip
-            .style(`top`, `${d3.event.pageY}px`)
+            .style(`top`, `${d3.event.pageY - 10}px`)
             .style(`left`, `${d3.event.pageX}px`);
         })
         .on(`mouseout`, (d) => {
