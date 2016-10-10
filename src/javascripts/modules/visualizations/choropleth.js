@@ -109,19 +109,27 @@ class Choropleth {
             .html(() => {
               if (this.rateById.get(d.properties.county)[0] !== ``) {
                 return `
-                  <h2>${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%</h2>
-                  <div class="choropleth__tooltip__quintile--title">1st Quintile</div>
-                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[1]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">2nd Quintile</div>
-                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[2]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">3rd Quintile</div>
-                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[3]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">4th Quintile</div>
-                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[4]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">5th Quintile</div>
-                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[5]}%</div>
-                  <div class="choropleth__tooltip__quintile--title">Top 5 Percent</div>
-                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[6]}%</div>
+                  <div class="container">
+                    <h2>${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%</h2>
+                    <div class="row">
+                      <div class="tooltip__left">
+                        <div class="tooltip__quintile--title">1st Quintile</div>
+                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[1]}%</div>
+                        <div class="tooltip__quintile--title">2nd Quintile</div>
+                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[2]}%</div>
+                        <div class="tooltip__quintile--title">3rd Quintile</div>
+                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[3]}%</div>
+                      </div>
+                      <div class="tooltip__right">
+                        <div class="tooltip__quintile--title">4th Quintile</div>
+                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[4]}%</div>
+                        <div class="tooltip__quintile--title">5th Quintile</div>
+                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[5]}%</div>
+                        <div class="tooltip__quintile--title">Top 5 Percent</div>
+                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[6]}%</div>
+                      </div>
+                    </div>
+                  </div>
                 `
               } else {
                 return `${d.properties.county}: No Data`
@@ -131,7 +139,7 @@ class Choropleth {
         })
         .on(`mousemove`, () => {
           this.tooltip
-            .style(`top`, `${d3.event.pageY + 150}px`)
+            .style(`top`, `${d3.event.pageY}px`)
             .style(`left`, `${d3.event.pageX}px`);
         })
         .on(`mouseout`, (d) => {
@@ -147,7 +155,7 @@ class Choropleth {
   draWTooltip() {
     this.tooltip = d3.select(this.el)
       .append(`div`)
-      .attr(`class`, `choropleth__tooltip`);
+      .attr(`class`, `tooltip`);
   }
 }
 

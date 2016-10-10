@@ -1,0 +1,39 @@
+.tooltip {
+  position: absolute;
+  transform: translateY(-100%);
+  pointer-events: none;
+  padding: 0.5em 1em;
+  font-size: rem(16);
+  color: $white;
+  background-color: rgba($black, 0.8);
+  border: em(1) solid $black;
+  border-radius: rem(5);
+  opacity: 0;
+  transition: opacity 0.3s linear;
+  font-family: $heading-font-family-sans;
+  border: 1px solid #ccc;
+  text-align: center;
+
+  &__left,
+  &__right {
+    @include span-columns(6 of 12);
+  }
+
+  &__quintile--title,
+  &__quintile,
+  &__county {
+    margin-bottom: $info-margin-bottom;
+  }
+
+  &__quintile--title,
+  &__county--title {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    margin-top: 0.7rem;
+    color: #AAA;
+  }
+
+  &.is-active {
+    opacity: 1;
+  }
+}
