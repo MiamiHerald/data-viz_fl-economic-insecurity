@@ -49,7 +49,11 @@ class Choropleth {
 
       TweenLite.set(chart, { scale: this.width / this.mapWidth });
       d3.select(`.choropleth__svg`).attr(`height`, this.height);
-      this.getNodePos(this.root.node())
+      this.scr = { x: window.scrollX, y: window.scrollY, w: window.innerWidth, h: window.innerHeight };
+      this.body_sel = d3.select(`body`);
+      this.body = { w: this.body_sel.node().offsetWidth, h: this.body_sel.node().offsetHeight };
+      this.doc = { w: document.width, h: document.height };
+      this.svgpos = this.getNodePos(this.root.node());
 
       if (this.pymChild) {
         this.pymChild.sendHeight();
@@ -156,13 +160,10 @@ class Choropleth {
           this.tooltip.style(`left`, ``);
           this.tooltip.style(`bottom`, ``);
           this.tooltip.style(`top`, ``);
-          // console.log('coordinates: doc/body/scr/svgpos/mouse: ', this.doc, this.body, this.scr, this.svgpos, this.m);
           if (this.m[0] > this.scr.x + this.scr.w / 2) {
-            console.log(`right`);
             this.tooltip.style(`right`, (this.body.w - this.m[0]) + `px`);
           }
           else {
-            console.log(`left`);
             this.tooltip.style(`left`, (this.m[0]) + `px`);
           }
 
