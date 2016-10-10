@@ -30,7 +30,7 @@ class Choropleth {
     this.body_sel = d3.select(`body`);
     this.body = { w: this.body_sel.node().offsetWidth, h: this.body_sel.node().offsetHeight };
     this.doc = { w: document.width, h: document.height };
-    this.svgpos = this.getNodePos(this.root.node());
+    this.svgpos = this.getNodePos(this.svg.node());
     this.dist = { x: 10, y: 10 };
 
     this.loadData();
@@ -160,23 +160,19 @@ class Choropleth {
           this.tooltip.style(`left`, ``);
           this.tooltip.style(`bottom`, ``);
           this.tooltip.style(`top`, ``);
+
           if (this.m[0] > this.scr.x + this.scr.w / 2) {
-            this.tooltip.style(`right`, (this.body.w - this.m[0]) + `px`);
+            this.tooltip.style(`right`, `${this.body.w - this.m[0]}px`);
           }
           else {
-            this.tooltip.style(`left`, (this.m[0]) + `px`);
+            this.tooltip.style(`left`, `${this.m[0]}px`);
           }
 
-          this.tooltip.style(`top`, (this.m[1] + this.dist.y) + `px`);
-
-          // if (this.m[1] > this.scr.y + this.scr.h / 2) {
-          //   console.log(`bottom`);
-          //   this.tooltip.style(`bottom`, (this.body.h - this.m[1]) + `px`);
-          // }
-          // else {
-          //   console.log(`top`);
-          //   this.tooltip.style(`top`, (this.m[1] + this.dist.y) + `px`);
-          // }
+          if (this.m[1] > this.scr.y + this.scr.h / 2) {
+            this.tooltip.style(`bottom`, `${this.m[1]}px`);
+          } else {
+            this.tooltip.style(`top`, `${this.m[1]}px`);
+          }
         })
         .on(`mouseout`, (d) => {
           d3.select(`.county--${d.id}`)
