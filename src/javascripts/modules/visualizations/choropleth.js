@@ -89,7 +89,7 @@ class Choropleth {
       .enter().append(`path`)
         .attr(`class`, (d) => {
           if (this.rateById.get(d.properties.county)[0] === ``) {
-            return `county county--null`
+            return `county county--${d.id} county--null`
           } else {
             return `county county--${d.id}`
           }
@@ -110,10 +110,11 @@ class Choropleth {
               if (this.rateById.get(d.properties.county)[0] !== ``) {
                 return `
                   <div class="container">
+                    <div class="tooltip__quintile--title">Change in income by quintile (2007-2014)</div>
                     <h2>${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%</h2>
                     <div class="row">
                       <div class="tooltip__left">
-                        <div class="tooltip__quintile--title">1st Quintile</div>
+                        <div class="tooltip__quintile--title">1st Quintile (poorest)</div>
                         <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[1]}%</div>
                         <div class="tooltip__quintile--title">2nd Quintile</div>
                         <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[2]}%</div>
@@ -139,7 +140,7 @@ class Choropleth {
         })
         .on(`mousemove`, () => {
           this.tooltip
-            .style(`top`, `${d3.event.pageY}px`)
+            .style(`top`, `${d3.event.pageY -10}px`)
             .style(`left`, `${d3.event.pageX}px`);
         })
         .on(`mouseout`, (d) => {
