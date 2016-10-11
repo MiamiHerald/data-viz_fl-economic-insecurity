@@ -51,7 +51,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Total employment change by county from 2007-2015`]))
+      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, [d[`Total employment change by county from 2007-2015`], d[`Annual Average Employment 2007`], d[`Annual Average Employment 2015`]]))
       .await(this.drawMap.bind(this));
   }
 
@@ -94,14 +94,20 @@ class Choropleth {
           }
         })
         .attr(`d`, this.path)
-        .style(`fill`, (d) => this.color(this.rateById.get(d.properties.county)))
+        .style(`fill`, (d) => this.color(this.rateById.get(d.properties.county)[0]))
         .on(`mouseover`, (d) => {
           d3.select(`.county--${d.id}`)
               .moveToFront()
               .classed(`is-active`, true);
 
           this.tooltip
-            .html(`${d.properties.county}: ${this.rateById.get(d.properties.county)}%`)
+            .html(`
+              ${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%
+              <div class="choropleth__tooltip__quintile--title">2007</div>
+              <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[1]}</div>
+              <div class="choropleth__tooltip__quintile--title">2015</div>
+              <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[2]}</div>
+            `)
             .classed(`is-active`, true);
         })
         .on(`mousemove`, () => {
