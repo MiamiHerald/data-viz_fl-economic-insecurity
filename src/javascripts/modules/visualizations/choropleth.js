@@ -106,6 +106,10 @@ class Choropleth {
           this.tooltip
             .html(`
               ${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%
+              <div class="choropleth__tooltip__quintile--title">2007</div>
+              <div class="choropleth__tooltip__quintile">$${this.rateById.get(d.properties.county)[1]}</div>
+              <div class="choropleth__tooltip__quintile--title">2015</div>
+              <div class="choropleth__tooltip__quintile">$${this.rateById.get(d.properties.county)[2]}</div>
             `)
             .classed(`is-active`, true);
         })
