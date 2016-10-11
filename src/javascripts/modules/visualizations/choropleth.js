@@ -25,13 +25,6 @@ class Choropleth {
         .attr(`width`, `100%`)
         .attr(`class`, `choropleth__svg`)
         .append(`g`);
-    this.root = d3.select(`svg`);
-    this.scr = { x: window.scrollX, y: window.scrollY, w: window.innerWidth, h: window.innerHeight };
-    this.body_sel = d3.select(`body`);
-    this.body = { w: this.body_sel.node().offsetWidth, h: this.body_sel.node().offsetHeight };
-    this.doc = { w: document.width, h: document.height };
-    this.svgpos = this.getNodePos(this.svg.node());
-    this.dist = { x: 10, y: 10 };
 
     this.loadData();
     $(window).on(`load`, () => {
@@ -49,11 +42,6 @@ class Choropleth {
 
       TweenLite.set(chart, { scale: this.width / this.mapWidth });
       d3.select(`.choropleth__svg`).attr(`height`, this.height);
-      this.scr = { x: window.scrollX, y: window.scrollY, w: window.innerWidth, h: window.innerHeight };
-      this.body_sel = d3.select(`body`);
-      this.body = { w: this.body_sel.node().offsetWidth, h: this.body_sel.node().offsetHeight };
-      this.doc = { w: document.width, h: document.height };
-      this.svgpos = this.getNodePos(this.root.node());
 
       if (this.pymChild) {
         this.pymChild.sendHeight();
@@ -64,7 +52,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, [d[`% 95/20 Ratio Change 2007-2014`], d[`Lowest Quintile`], d[`Second Quintile`], d[`Third Quintile`], d[`Fourth Quintile`], d[`Highest Quintile`], d[`Top 5 Percent`]]))
+      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, [d[`% 95/20 Ratio Change 2007-2014`], d[`95/20 Gap 2007`], d[`95/20 Gap 2014`]]))
       .await(this.drawMap.bind(this));
   }
 
@@ -119,30 +107,14 @@ class Choropleth {
 
           this.tooltip
             .html(() => {
-              if (this.rateById.get(d.properties.county)[0] !== ``) {
+              if (this.rateById.get(d.properties.county)[0]) {
                 return `
-                  <div class="container">
-                    <div class="tooltip__quintile--title">Change in income by quintile (2007-2014)</div>
-                    <h2>${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%</h2>
-                    <div class="row">
-                      <div class="tooltip__left">
-                        <div class="tooltip__quintile--title">1st Quintile (poorest)</div>
-                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[1]}%</div>
-                        <div class="tooltip__quintile--title">2nd Quintile</div>
-                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[2]}%</div>
-                        <div class="tooltip__quintile--title">3rd Quintile</div>
-                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[3]}%</div>
-                      </div>
-                      <div class="tooltip__right">
-                        <div class="tooltip__quintile--title">4th Quintile</div>
-                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[4]}%</div>
-                        <div class="tooltip__quintile--title">5th Quintile</div>
-                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[5]}%</div>
-                        <div class="tooltip__quintile--title">Top 5 Percent</div>
-                        <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[6]}%</div>
-                      </div>
-                    </div>
-                  </div>
+                  ${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%
+                  <div class="tooltip__quintile--title">Income of the richest 5% compared to lowest 20%</div>
+                  <div class="tooltip__quintile--title">2007</div>
+                  <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[1]} times as high</div>
+                  <div class="tooltip__quintile--title">2015</div>
+                  <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[2]} times as high</div>
                 `
               } else {
                 return `${d.properties.county}: No Data`
@@ -151,28 +123,9 @@ class Choropleth {
             .classed(`is-active`, true);
         })
         .on(`mousemove`, () => {
-          this.m = d3.mouse(this.root.node());
-          this.scr.x = window.scrollX;
-          this.scr.y = window.scrollY;
-          this.m[0] += this.svgpos.x;
-          this.m[1] += this.svgpos.y;
-          this.tooltip.style(`right`, ``);
-          this.tooltip.style(`left`, ``);
-          this.tooltip.style(`bottom`, ``);
-          this.tooltip.style(`top`, ``);
-
-          if (this.m[0] > this.scr.x + this.scr.w / 2) {
-            this.tooltip.style(`right`, `${this.body.w - this.m[0]}px`);
-          }
-          else {
-            this.tooltip.style(`left`, `${this.m[0]}px`);
-          }
-
-          if (this.m[1] > this.scr.y + this.scr.h / 2) {
-            this.tooltip.style(`bottom`, `${this.m[1]}px`);
-          } else {
-            this.tooltip.style(`top`, `${this.m[1]}px`);
-          }
+          this.tooltip
+              .style(`left`, `${d3.event.pageX}px`)
+              .style(`top`, `${d3.event.pageY - 10}px`);
         })
         .on(`mouseout`, (d) => {
           d3.select(`.county--${d.id}`)
@@ -182,17 +135,6 @@ class Choropleth {
           this.tooltip
             .classed(`is-active`, false);
         });
-  }
-
-  // based off of http://bl.ocks.org/GerHobbelt/2505393
-  getNodePos(el) {
-    let body = d3.select('body').node();
-
-    for (var lx = 0, ly = 0;
-         el != null && el != body;
-         lx += (el.offsetLeft || el.clientLeft), ly += (el.offsetTop || el.clientTop), el = (el.offsetParent || el.parentNode))
-        ;
-    return {x: lx, y: ly};
   }
 
   draWTooltip() {

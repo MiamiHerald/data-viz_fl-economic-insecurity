@@ -1,9 +1,9 @@
 .tooltip {
-  text-align: center;
   position: absolute;
-  // transform: translate(-50%, -100%);
+  text-align: center;
+  transform: translate(-50%, -100%);
   pointer-events: none;
-  padding: 0.5em 1em;
+  padding: 0.25em 0.5em;
   font-size: rem(16);
   color: $white;
   background-color: rgba($black, 0.8);
@@ -12,14 +12,12 @@
   opacity: 0;
   transition: opacity 0.3s linear;
   font-family: $heading-font-family-sans;
-  // max-width: em(150);
-  // @include media($medium-screen-up) {
-  //   max-width: none;
-  // }
-
-  &__left,
-  &__right {
-    @include span-columns(6 of 12);
+  min-width: em(100);
+  max-width: em(200);
+  @include media($medium-screen-up) {
+    padding: 0.5em 1em;
+    min-width: none;
+    max-width: em(250);
   }
 
   &__quintile--title,
