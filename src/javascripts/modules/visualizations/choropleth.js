@@ -110,7 +110,7 @@ class Choropleth {
               if (this.rateById.get(d.properties.county)[0]) {
                 return `
                   ${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%
-                  <div class="tooltip__quintile--title">Income of the richest 5% compared to lowest 20%</div>
+                  <div class="tooltip__quintile--title">Income of richest 5%<br> compared to lowest 20%:</div>
                   <div class="tooltip__quintile--title">2007</div>
                   <div class="tooltip__quintile">${this.rateById.get(d.properties.county)[1]} times as high</div>
                   <div class="tooltip__quintile--title">2015</div>
