@@ -4,7 +4,7 @@
   transform: translate(-50%, -100%);
   pointer-events: none;
   padding: 0.25em 0.5em;
-  font-size: 0.8rem;
+  font-size: rem(16);
   color: $white;
   background-color: rgba($black, 0.8);
   border: em(1) solid $black;
@@ -18,6 +18,10 @@
     padding: 0.5em 1em;
     min-width: none;
     max-width: em(250);
+  }
+
+  &__quintile {
+    font-size: 0.8rem;
   }
 
   &__quintile--title,
