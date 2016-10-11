@@ -52,7 +52,7 @@ class Choropleth {
   loadData() {
     d3.queue()
       .defer(d3.json, this.shapeUrl)
-      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, d[`Percent change in poverty rate by county`]))
+      .defer(d3.csv, this.dataUrl, (d) => this.rateById.set(d.Counties, [d[`Percent change in poverty rate by county`], d[`Poverty Rate 2007`], d[`Poverty Rate 2015`]]))
       .await(this.drawMap.bind(this));
   }
 
@@ -88,7 +88,7 @@ class Choropleth {
         .data(topojson.feature(shapeData, shapeData.objects[`florida-counties`]).features)
       .enter().append(`path`)
         .attr(`class`, (d) => {
-          if (this.rateById.get(d.properties.county) === ``) {
+          if (this.rateById.get(d.properties.county)[0] === ``) {
             return `county county--${d.id} county--null`
           } else {
             return `county county--${d.id}`
@@ -96,8 +96,8 @@ class Choropleth {
         })
         .attr(`d`, this.path)
         .style(`fill`, (d) => {
-          if (this.rateById.get(d.properties.county) !== ``) {
-            return this.color(this.rateById.get(d.properties.county))
+          if (this.rateById.get(d.properties.county)[0] !== ``) {
+            return this.color(this.rateById.get(d.properties.county)[0])
           }
         })
         .on(`mouseover`, (d) => {
@@ -107,8 +107,14 @@ class Choropleth {
 
           this.tooltip
             .html(() => {
-              if (this.rateById.get(d.properties.county)) {
-                return `${d.properties.county}: ${this.rateById.get(d.properties.county)}%`
+              if (this.rateById.get(d.properties.county)[0]) {
+                return `
+                  ${d.properties.county}: ${this.rateById.get(d.properties.county)[0]}%
+                  <div class="choropleth__tooltip__quintile--title">2007</div>
+                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[1]}%</div>
+                  <div class="choropleth__tooltip__quintile--title">2015</div>
+                  <div class="choropleth__tooltip__quintile">${this.rateById.get(d.properties.county)[2]}%</div>
+                `
               } else {
                 return `${d.properties.county}: No Data`
               }
