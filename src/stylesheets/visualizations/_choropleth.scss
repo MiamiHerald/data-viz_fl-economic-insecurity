@@ -39,6 +39,20 @@
       max-width: none;
     }
 
+    &__quintile--title,
+    &__quintile,
+    &__county {
+      margin-bottom: $info-margin-bottom;
+    }
+
+    &__quintile--title,
+    &__county--title {
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      margin-top: 0.7rem;
+      color: #AAA;
+    }
+
     &.is-active {
       opacity: 1;
     }
