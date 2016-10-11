@@ -34,9 +34,13 @@
     opacity: 0;
     transition: opacity 0.1s linear;
     font-family: $heading-font-family-sans;
-    max-width: em(100);
+    max-width: em(120);
     @include media($medium-screen-up) {
       max-width: none;
+    }
+
+    &__quintile {
+      font-size: 0.8rem;
     }
 
     &__quintile--title,
