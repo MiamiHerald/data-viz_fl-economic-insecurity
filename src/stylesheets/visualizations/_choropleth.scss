@@ -20,6 +20,12 @@
     margin-bottom: 1rem;
   }
 
+  &__instructions {
+    color: #666666;
+    font-style: italic;
+    font-size: 0.8em;
+  }
+
   &__tooltip {
       text-align: center;
       position: absolute;
