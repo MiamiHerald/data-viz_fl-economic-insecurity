@@ -116,7 +116,7 @@ class Choropleth {
                   <div class="choropleth__tooltip__quintile">$${this.rateById.get(d.properties.county)[2]}</div>
                 `
               } else {
-                return `${d.properties.county}: No Data`
+                return `${d.properties.county}: Sin datos`
               }
             })
             .classed(`is-active`, true);
